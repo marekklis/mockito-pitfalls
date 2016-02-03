@@ -1,4 +1,4 @@
-package pitfalls
+package pitfalls.defparam
 
 class Band(rockable: Rockable) {
 
