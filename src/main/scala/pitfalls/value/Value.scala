@@ -1,6 +1,6 @@
-package pitfalls
+package pitfalls.value
 
-import Value.{LongValue, StringValue}
+import pitfalls.value.Value.{LongValue, StringValue}
 
 object Value {
 

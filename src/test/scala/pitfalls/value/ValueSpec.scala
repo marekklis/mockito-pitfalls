@@ -1,9 +1,9 @@
-package pitfalls
+package pitfalls.value
 
-import Value.{LongValue, StringValue}
 import org.mockito.BDDMockito._
 import org.scalatest.FlatSpec
 import org.scalatest.mock.MockitoSugar
+import pitfalls.value.Value.{LongValue, StringValue}
 
 class ValueSpec extends FlatSpec with MockitoSugar {
 
