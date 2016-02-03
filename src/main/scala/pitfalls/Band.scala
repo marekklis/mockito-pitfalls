@@ -1,4 +1,4 @@
-package io.scalac.pitfalls
+package pitfalls
 
 class Band(rockable: Rockable) {
 

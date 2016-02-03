@@ -1,6 +1,6 @@
-package io.scalac.pitfalls
+package pitfalls
 
-import io.scalac.pitfalls.Value.{LongValue, StringValue}
+import Value.{LongValue, StringValue}
 
 object Value {
 

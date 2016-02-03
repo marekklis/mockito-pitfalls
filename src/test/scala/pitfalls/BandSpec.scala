@@ -1,4 +1,4 @@
-package io.scalac.pitfalls
+package pitfalls
 
 import org.scalatest.FlatSpec
 import org.scalatest.mock.MockitoSugar
