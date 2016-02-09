@@ -4,7 +4,7 @@ import org.mockito.Mockito._
 import org.scalatest.FlatSpec
 import org.scalatest.mock.MockitoSugar
 
-class MultipeSpec extends FlatSpec with MockitoSugar {
+class MultipleSpec extends FlatSpec with MockitoSugar {
 
   val service = mock[Service]
   val multiple = new Multiple(service)
