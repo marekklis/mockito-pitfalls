@@ -1,10 +1,11 @@
 package pitfalls.defparam
 
 import org.mockito.Mockito._
-import org.scalatest.FunSpec
+import org.scalatest._
 import org.scalatest.mock.MockitoSugar
+import org.mockito.BDDMockito._
 
-class DefParamSpec extends FunSpec with MockitoSugar {
+class DefParamSpec extends FunSpec with MockitoSugar with Matchers {
 
   val someInt = 1
   val otherInt = 2
@@ -17,6 +18,12 @@ class DefParamSpec extends FunSpec with MockitoSugar {
       it("verify a mock call works [ok]") {
         band.letsRock1(someInt, someString)
         verify(rockable).rock1(someInt, someString)
+      }
+
+      it("`given` a mock call works [ok]") {
+        val toReturn = 10
+        given(rockable.rock1(someInt, someString)).willReturn(toReturn)
+        band.letsRock1(someInt, someString) should equal(toReturn)
       }
     }
 
