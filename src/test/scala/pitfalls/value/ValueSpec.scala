@@ -12,7 +12,7 @@ class ValueSpec extends FunSpec with MockitoSugar {
   describe("While dealing with value object") {
     describe("Mockito doesn't work with matcher") {
       it("for String") {
-        val firstValue = StringValue("first")
+
         val eqFirst: StringValue = org.mockito.Matchers.eq(StringValue("first"))
         val anySecond: StringValue = org.mockito.Matchers.any[StringValue]
 
