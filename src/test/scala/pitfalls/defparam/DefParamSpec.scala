@@ -34,7 +34,7 @@ class DefParamSpec extends FunSpec with MockitoSugar with Matchers {
       }
     }
 
-    describe("Mockito fails if default parametr added and we're asserting on that value") {
+    describe("Mockito fails if default parameter added and we're asserting on that value") {
       it("verify a mock call fails [fail-but-should-be-ok]") {
         band.letsRock2WithThird(someInt, someString)
         verify(rockable).rock2(otherInt, someString, 6)
