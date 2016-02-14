@@ -3,7 +3,7 @@ package pitfalls.value
 import org.mockito.BDDMockito._
 import org.scalatest._
 import org.scalatest.mock.MockitoSugar
-import pitfalls.value.Value.StringValue
+import pitfalls.value.Value.{LongValue, StringValue}
 
 class ValueStage2Spec extends FunSpec with MockitoSugar {
 
@@ -26,6 +26,21 @@ class ValueStage2Spec extends FunSpec with MockitoSugar {
 
         assert(result == "lorem ipsum")
       }
+    }
+
+    it("for Long - magic not works") {
+
+      val first = LongValue(317L)
+      val expected = 734
+
+      given(valueService.doItLong(
+        org.mockito.Matchers.eq(first.value).asInstanceOf[LongValue],
+        org.mockito.Matchers.any[Long].asInstanceOf[LongValue]))
+        .willReturn(expected)
+
+      val result = valueService.doItLong(first, LongValue(452))
+
+      assert(result == expected)
     }
   }
 
