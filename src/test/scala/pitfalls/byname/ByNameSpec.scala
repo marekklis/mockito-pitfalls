@@ -1,21 +1,25 @@
 package pitfalls.byname
 
 import org.mockito.Mockito._
-import org.scalatest.FlatSpec
+import org.scalatest.FunSpec
 import org.scalatest.mock.MockitoSugar
 
-class ByNameSpec extends FlatSpec with MockitoSugar {
+class ByNameSpec extends FunSpec with MockitoSugar {
 
   val service = mock[Service]
   val intValue = 137
+
   def intFunction() = intValue
 
-  "doIt" should "call service.doItByName" in {
-    val byName = new ByName(service)
+  describe("call-by-name parameter") {
 
-    byName.doIt(intFunction)
+    it("does not work with verify") {
+      val byName = new ByName(service)
 
-    verify(service).doItByName(intFunction)
+      byName.doIt(intFunction)
+
+      verify(service).doItByName(intFunction)
+    }
   }
 
 }
