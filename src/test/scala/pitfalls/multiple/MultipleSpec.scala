@@ -1,5 +1,6 @@
 package pitfalls.multiple
 
+import org.mockito.BDDMockito._
 import org.mockito.Mockito._
 import org.scalatest.FunSpec
 import org.scalatest.mock.MockitoSugar
@@ -31,6 +32,33 @@ class MultipleSpec extends FunSpec with MockitoSugar {
 
         verify(service).unless(true)(someText)
         assert(result == secondValue)
+      }
+    }
+
+    describe("Matchers also works") {
+
+      it("when we call in 'normal way'") {
+        given(service.unless
+          (org.mockito.Matchers.eq(true))
+          (org.mockito.Matchers.any[String])
+        ).willReturn("lorem ipsum")
+
+        val result = service.unless(true)("any string")
+
+        assert(result == "lorem ipsum")
+      }
+
+      it("with carrying") {
+        given(service.unless
+          (org.mockito.Matchers.eq(true))
+          (org.mockito.Matchers.any[String])
+        ).willReturn("lorem ipsum")
+
+        val carry = service.unless(true) _
+
+        val result = carry("any string")
+
+        assert(result == "lorem ipsum")
       }
     }
   }
