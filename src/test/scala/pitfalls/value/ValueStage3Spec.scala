@@ -5,7 +5,7 @@ import org.scalatest._
 import org.scalatest.mock.MockitoSugar
 import pitfalls.value.Value.{LongValue, StringValue}
 
-class ValueSpec extends FunSpec with MockitoSugar {
+class ValueStage3Spec extends FunSpec with MockitoSugar {
 
   val valueService = mock[ValueService]
 
