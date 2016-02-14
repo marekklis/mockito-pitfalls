@@ -1,7 +1,7 @@
 package pitfalls.value
 
 import org.mockito.BDDMockito._
-import org.scalatest.FunSpec
+import org.scalatest._
 import org.scalatest.mock.MockitoSugar
 import pitfalls.value.Value.{LongValue, StringValue}
 
@@ -10,6 +10,24 @@ class ValueSpec extends FunSpec with MockitoSugar {
   val valueService = mock[ValueService]
 
   describe("While dealing with value object") {
+    describe("Mockito doesn't work with matcher") {
+      it("for String") {
+        val firstValue = StringValue("first")
+        val eqFirst: StringValue = org.mockito.Matchers.eq(StringValue("first"))
+        val anySecond: StringValue = org.mockito.Matchers.any[StringValue]
+
+        given(valueService.doItString(
+          eqFirst,
+          anySecond))
+          .willReturn("lorem ipsum")
+
+        val result = valueService.doItString(StringValue("first"), StringValue("second"))
+
+        assert(result == "lorem ipsum")
+
+      }
+    }
+
     describe("Mockito works correctly if matcher is 'inside' value object") {
 
       it("works for String") {
