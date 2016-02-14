@@ -1,42 +1,47 @@
 package pitfalls.value
 
 import org.mockito.BDDMockito._
-import org.scalatest.FlatSpec
+import org.scalatest.FunSpec
 import org.scalatest.mock.MockitoSugar
 import pitfalls.value.Value.{LongValue, StringValue}
 
-class ValueSpec extends FlatSpec with MockitoSugar {
+class ValueSpec extends FunSpec with MockitoSugar {
 
   val valueService = mock[ValueService]
 
-  "Value.doItString" should "be called with eq('first') and anyString" in {
+  describe("While dealing with value object") {
+    describe("Mockito works correctly if matcher is 'inside' value object") {
 
-    val eqFirst: StringValue = StringValue(org.mockito.Matchers.eq("first"))
-    val anySecond: StringValue = StringValue(org.mockito.Matchers.any[String])
+      it("works for String") {
 
-    given(valueService.doItString(
-      eqFirst,
-      anySecond))
-      .willReturn("lorem ipsum")
+        val eqFirst: StringValue = StringValue(org.mockito.Matchers.eq("first"))
+        val anySecond: StringValue = StringValue(org.mockito.Matchers.any[String])
 
-    val result = valueService.doItString(StringValue("first"), StringValue("second"))
+        given(valueService.doItString(
+          eqFirst,
+          anySecond))
+          .willReturn("lorem ipsum")
 
-    assert(result == "lorem ipsum")
-  }
+        val result = valueService.doItString(StringValue("first"), StringValue("second"))
 
-  "Value.doItLong" should "be called with eq(1L) and anyLong" in {
+        assert(result == "lorem ipsum")
+      }
 
-    val eqFirst: LongValue = LongValue(org.mockito.Matchers.eq(1L))
-    val anySecond: LongValue = LongValue(org.mockito.Matchers.any[Long])
+      it("it works for Long") {
 
-    given(valueService.doItLong(
-      eqFirst,
-      anySecond))
-      .willReturn(7)
+        val eqFirst: LongValue = LongValue(org.mockito.Matchers.eq(1L))
+        val anySecond: LongValue = LongValue(org.mockito.Matchers.any[Long])
 
-    val result = valueService.doItLong(LongValue(1), LongValue(3))
+        given(valueService.doItLong(
+          eqFirst,
+          anySecond))
+          .willReturn(7)
 
-    assert(result == 7)
+        val result = valueService.doItLong(LongValue(1), LongValue(3))
+
+        assert(result == 7)
+      }
+    }
   }
 
 }
