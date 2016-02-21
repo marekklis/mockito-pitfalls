@@ -7,7 +7,7 @@ import org.scalatest.mock.MockitoSugar
 
 class LogicSpec extends FunSpec with MockitoSugar {
 
-  val token = "token"
+  implicit val token = "token"
   val id = 12L
   val employee = Employee(EmployeeId(id), "fn", "ln")
   val pageNo = 1
@@ -24,7 +24,7 @@ class LogicSpec extends FunSpec with MockitoSugar {
         when(userProvider.user(token)).thenReturn(Option(User("user", Set(Editor))))
         when(repository.addEmployee("fn", "ln")).thenReturn(EmployeeId(id))
 
-        val result = logic.addEmployee(token, "fn", "ln")
+        val result = logic.addEmployee("fn", "ln")
 
         verify(repository).addEmployee("fn", "ln")
         assert(result.right.get == id)
@@ -33,7 +33,7 @@ class LogicSpec extends FunSpec with MockitoSugar {
       it("can not add if user is logged in and has role Reader") {
         when(userProvider.user(token)).thenReturn(Option(User("user", Set(Reader))))
 
-        val result = logic.addEmployee(token, "fn", "ln")
+        val result = logic.addEmployee("fn", "ln")
 
         assert(result.left.get == "Editor role is needed")
       }
@@ -41,7 +41,7 @@ class LogicSpec extends FunSpec with MockitoSugar {
       it("can not add if user is not logged") {
         when(userProvider.user(token)).thenReturn(None)
 
-        val result = logic.addEmployee(token, "fn", "ln")
+        val result = logic.addEmployee("fn", "ln")
 
         assert(result.left.get == "user not logged in")
       }
@@ -56,7 +56,7 @@ class LogicSpec extends FunSpec with MockitoSugar {
           org.mockito.Matchers.any[Boolean])
         ).thenReturn(1)
 
-        val result = logic.removeEmployee(token, id)
+        val result = logic.removeEmployee(id)
 
         assert(result.right.get == 1)
       }
@@ -64,7 +64,7 @@ class LogicSpec extends FunSpec with MockitoSugar {
       it("can not remove if user is logged in and has role Reader") {
         when(userProvider.user(token)).thenReturn(Option(User("user", Set(Reader))))
 
-        val result = logic.removeEmployee(token, id)
+        val result = logic.removeEmployee(id)
 
         assert(result.left.get == "Editor role is needed")
       }
@@ -72,7 +72,7 @@ class LogicSpec extends FunSpec with MockitoSugar {
       it("can not remove if user is not logged in") {
         when(userProvider.user(token)).thenReturn(None)
 
-        val result = logic.removeEmployee(token, id)
+        val result = logic.removeEmployee(id)
 
         assert(result.left.get == "user not logged in")
       }
@@ -83,7 +83,7 @@ class LogicSpec extends FunSpec with MockitoSugar {
       it("should call repository with the same pageNo if user logged in and has role Editor - SHOULD FAIL BUT WORKS") {
         when(userProvider.user(token)).thenReturn(Option(User("user", Set(Editor))))
 
-        val result = logic.listEmployees(token, pageNo)
+        val result = logic.listEmployees(pageNo)
 
         verify(repository).listEmployeesPaged(pageNo + 2) // pageNo is different
       }
@@ -92,7 +92,7 @@ class LogicSpec extends FunSpec with MockitoSugar {
         when(userProvider.user(token)).thenReturn(Option(User("user", Set(Editor))))
         when(repository.listEmployeesPaged(pageNo)).thenReturn(List(employee))
 
-        val result = logic.listEmployees(token, pageNo)
+        val result = logic.listEmployees(pageNo)
 
         assert(result.right.get == List(employee))
       }
@@ -101,7 +101,7 @@ class LogicSpec extends FunSpec with MockitoSugar {
         when(userProvider.user(token)).thenReturn(Option(User("user", Set(Reader))))
         when(repository.listEmployeesPaged(pageNo)).thenReturn(List(employee))
 
-        val result = logic.listEmployees(token, pageNo)
+        val result = logic.listEmployees(pageNo)
 
         assert(result.right.get == List(employee))
       }
@@ -109,7 +109,7 @@ class LogicSpec extends FunSpec with MockitoSugar {
       it("should not list if user is not logged in") {
         when(userProvider.user(token)).thenReturn(None)
 
-        val result = logic.listEmployees(token, pageNo)
+        val result = logic.listEmployees(pageNo)
 
         assert(result.left.get == "user not logged in")
       }
