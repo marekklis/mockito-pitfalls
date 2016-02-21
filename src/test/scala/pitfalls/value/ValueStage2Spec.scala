@@ -42,6 +42,17 @@ class ValueStage2Spec extends FunSpec with MockitoSugar {
 
       assert(result == expected)
     }
+
+    describe("Mockito should work with returning value - after some magic added") {
+      it("for String - MAGIC DOESN'T WORK") {
+        val text = "lorem ipsum"
+        given(valueService.returnStringValue(text)).willReturn(text.asInstanceOf[StringValue])
+
+        val result = valueService.returnStringValue(text)
+
+        assert(result == StringValue(text))
+      }
+    }
   }
 
 }
