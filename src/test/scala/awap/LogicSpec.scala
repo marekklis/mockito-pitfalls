@@ -1,6 +1,6 @@
 package awap
 
-import Repository.EmployeeId
+import Repository._
 import org.mockito.Mockito._
 import org.scalatest.FunSpec
 import org.scalatest.mock.MockitoSugar
@@ -8,7 +8,10 @@ import org.scalatest.mock.MockitoSugar
 class LogicSpec extends FunSpec with MockitoSugar {
 
   val token = "token"
-  val id = 1L
+  val id = 12L
+  val employee = Employee(EmployeeId(id), "fn", "ln")
+  val pageNo = 1
+
   val userProvider = mock[UserProvider]
   val repository = mock[Repository]
   val logic = new Logic(userProvider, repository)
@@ -70,6 +73,43 @@ class LogicSpec extends FunSpec with MockitoSugar {
         when(userProvider.user(token)).thenReturn(None)
 
         val result = logic.removeEmployee(token, id)
+
+        assert(result.left.get == "user not logged in")
+      }
+    }
+
+    describe("listing employees") {
+
+      it("should call repository with the same pageNo if user logged in and has role Editor - SHOULD FAIL BUT WORKS") {
+        when(userProvider.user(token)).thenReturn(Option(User("user", Set(Editor))))
+
+        val result = logic.listEmployees(token, pageNo)
+
+        verify(repository).listEmployeesPaged(pageNo + 2) // pageNo is different
+      }
+
+      it("should list if user logged in and has role Editor - SHOULD FAIL BUT WORKS") {
+        when(userProvider.user(token)).thenReturn(Option(User("user", Set(Editor))))
+        when(repository.listEmployeesPaged(pageNo)).thenReturn(List(employee))
+
+        val result = logic.listEmployees(token, pageNo)
+
+        assert(result.right.get == List(employee))
+      }
+
+      it("should list if user logged in and has role Reader - SHOULD FAIL BUT WORKS") {
+        when(userProvider.user(token)).thenReturn(Option(User("user", Set(Reader))))
+        when(repository.listEmployeesPaged(pageNo)).thenReturn(List(employee))
+
+        val result = logic.listEmployees(token, pageNo)
+
+        assert(result.right.get == List(employee))
+      }
+
+      it("should not list if user is not logged in") {
+        when(userProvider.user(token)).thenReturn(None)
+
+        val result = logic.listEmployees(token, pageNo)
 
         assert(result.left.get == "user not logged in")
       }
