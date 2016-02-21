@@ -46,13 +46,32 @@ class LogicSpec extends FunSpec with MockitoSugar {
 
     describe("removing employee") {
 
-      it("can remove if user is logged in and jas role Editor") {
+      it("can remove if user is logged in and has role Editor") {
         when(userProvider.user(token)).thenReturn(Option(User("user", Set(Editor))))
-        when(repository.removeEmployeeById(EmployeeId(id))).thenReturn(1)
+        when(repository.removeEmployeeById(
+          EmployeeId(org.mockito.Matchers.eq(id)),
+          org.mockito.Matchers.any[Boolean])
+        ).thenReturn(1)
 
         val result = logic.removeEmployee(token, id)
 
         assert(result.right.get == 1)
+      }
+
+      it("can not remove if user is logged in and has role Reader") {
+        when(userProvider.user(token)).thenReturn(Option(User("user", Set(Reader))))
+
+        val result = logic.removeEmployee(token, id)
+
+        assert(result.left.get == "Editor role is needed")
+      }
+
+      it("can not remove if user is not logged in") {
+        when(userProvider.user(token)).thenReturn(None)
+
+        val result = logic.removeEmployee(token, id)
+
+        assert(result.left.get == "user not logged in")
       }
     }
   }

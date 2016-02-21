@@ -5,7 +5,8 @@ import scala.collection.mutable
 object Repository {
 
   case class EmployeeId(val id: Long) extends AnyVal
-  case class Employee(id: EmployeeId, firstName: String, lastName: String)
+
+  case class Employee(id: EmployeeId, firstName: String, lastName: String, isRemoved: Boolean = false)
 
   private val employees = mutable.ListBuffer[Employee]()
 
@@ -29,15 +30,20 @@ class Repository {
     id
   }
 
-  def removeEmployeeById(id: EmployeeId): Int = {
-    employees.find(_.id == id).map{ u =>
-      employees -= u
-      1
-    }.getOrElse(0)
-  }
+  def removeEmployeeById(id: EmployeeId, permanently: Boolean): Int =
+    employees
+      .find(_.id == id)
+      .map { u =>
+        employees -= u
+        if (!permanently) employees += u.copy(isRemoved = true)
+        1
+      }.getOrElse(0)
 
-  def listEmployeesPaged(pageNo: Int, pageSize: Int = 5): List[Employee] = {
-    employees.drop((pageNo - 1) * pageSize).take(pageSize).toList
-  }
+  def listEmployeesPaged(pageNo: Int, pageSize: Int = 5): List[Employee] =
+    employees
+      .filterNot(_.isRemoved)
+      .drop((pageNo - 1) * pageSize)
+      .take(pageSize)
+      .toList
 
 }

@@ -15,7 +15,7 @@ class Logic(userProvider: UserProvider, repository: Repository) {
 
   def removeEmployee(token: String, employeeId: Long): Either[String, Int] = userProvider.user(token) match {
     case Some(user) if user.roles.contains(Editor) =>
-      Right(repository.removeEmployeeById(EmployeeId(employeeId)))
+      Right(repository.removeEmployeeById(EmployeeId(employeeId), true))
     case Some(user) =>
       Left("Editor role is needed")
     case _ =>
