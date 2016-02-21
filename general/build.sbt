@@ -1,8 +1,4 @@
-lazy val general = project
-
-lazy val fplike = project
-
-name := "mockito-pitfalls"
+name := "general"
 
 version := "1.0"
 

@@ -88,7 +88,7 @@ class LogicSpec extends FunSpec with MockitoSugar {
         verify(repository).listEmployeesPaged(pageNo + 2) // pageNo is different
       }
 
-      it("should list if user logged in and has role Editor - SHOULD FAIL BUT WORKS") {
+      it("should list if user logged in and has role Editor") {
         when(userProvider.user(token)).thenReturn(Option(User("user", Set(Editor))))
         when(repository.listEmployeesPaged(pageNo)).thenReturn(List(employee))
 
@@ -97,7 +97,7 @@ class LogicSpec extends FunSpec with MockitoSugar {
         assert(result.right.get == List(employee))
       }
 
-      it("should list if user logged in and has role Reader - SHOULD FAIL BUT WORKS") {
+      it("should list if user logged in and has role Reader") {
         when(userProvider.user(token)).thenReturn(Option(User("user", Set(Reader))))
         when(repository.listEmployeesPaged(pageNo)).thenReturn(List(employee))
 
