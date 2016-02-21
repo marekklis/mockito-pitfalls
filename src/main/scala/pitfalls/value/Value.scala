@@ -15,4 +15,6 @@ trait ValueService {
   def doItString(first: StringValue, second: StringValue): String
 
   def doItLong(first: LongValue, second: LongValue): Long
+
+  def returnStringValue(text: String): StringValue = StringValue(text)
 }

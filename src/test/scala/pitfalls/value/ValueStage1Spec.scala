@@ -27,6 +27,17 @@ class ValueStage1Spec extends FunSpec with MockitoSugar {
         assert(result == "lorem ipsum")
       }
     }
+
+    describe("Mockito doesn't work with function returning value object") {
+      it("for String") {
+        val first = StringValue("first")
+        given(valueService.returnStringValue("first")).willReturn(first)
+
+        val result = valueService.returnStringValue("first")
+
+        assert(result == first)
+      }
+    }
   }
 
 }
