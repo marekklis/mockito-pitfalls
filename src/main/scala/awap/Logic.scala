@@ -13,7 +13,7 @@ class Logic(userProvider: UserProvider, repository: Repository) {
       Left("user not logged in")
   }
 
-  def removeEmployee(token: String, employeeId: Long): Either[String, Unit] = userProvider.user(token) match {
+  def removeEmployee(token: String, employeeId: Long): Either[String, Int] = userProvider.user(token) match {
     case Some(user) if user.roles.contains(Editor) =>
       Right(repository.removeEmployeeById(EmployeeId(employeeId)))
     case Some(user) =>
