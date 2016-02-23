@@ -12,22 +12,23 @@ class LogicSpec extends FunSpec {
 
   def userProvider(result: Option[User])(token: String) = result
 
-  def insertEmployee(fn: String, ln: String) = EmployeeId(id)
-
-  def removeEmployeeById(id: EmployeeId, permanently: Boolean) = 0
-
-  def listEmployeesPaged(pageNo: Int) = List.empty[Employee]
+  def createLogic(userProvider: (String) => Option[User],
+            insertEmployee: (String, String) => EmployeeId = (fn: String, ln: String) => EmployeeId(id),
+            removeEmployeeById: (EmployeeId, Boolean) => Int = (id: EmployeeId, permanently: Boolean) => 0,
+            listEmployeesPaged: (Int) => List[Employee] = (pageNo: Int) => List.empty[Employee]): Logic =
+    new Logic(
+      userProvider = userProvider,
+      insertEmployee = insertEmployee,
+      removeEmployeeById = removeEmployeeById,
+      listEmployeesPaged = listEmployeesPaged)
 
   describe("logic") {
 
     describe("adding employee") {
 
       it("can add if user is logged in and has role Editor") {
-        val logic = new Logic(
-          userProvider(Option(User("user", Set(Editor)))),
-          insertEmployee = (fn: String, ln: String) => EmployeeId(id),
-          removeEmployeeById,
-          listEmployeesPaged
+        val logic: Logic = createLogic(
+          userProvider = userProvider(Option(User("user", Set(Editor))))
         )
 
         val result = logic.addEmployee("fn", "ln")
@@ -36,11 +37,8 @@ class LogicSpec extends FunSpec {
       }
 
       it("can not add if user is logged in and has role Reader") {
-        val logic = new Logic(
-          userProvider(Option(User("user", Set(Reader)))),
-          insertEmployee,
-          removeEmployeeById,
-          listEmployeesPaged
+        val logic = createLogic(
+          userProvider = userProvider(Option(User("user", Set(Reader))))
         )
 
         val result = logic.addEmployee("fn", "ln")
@@ -49,11 +47,8 @@ class LogicSpec extends FunSpec {
       }
 
       it("can not add if user is not logged") {
-        val logic = new Logic(
-          userProvider(None),
-          insertEmployee,
-          removeEmployeeById,
-          listEmployeesPaged
+        val logic = createLogic(
+          userProvider = userProvider(None)
         )
 
         val result = logic.addEmployee("fn", "ln")
@@ -65,11 +60,9 @@ class LogicSpec extends FunSpec {
     describe("removing employee") {
 
       it("can remove if user is logged in and has role Editor") {
-        val logic = new Logic(
-          userProvider(Option(User("user", Set(Editor)))),
-          insertEmployee,
-          removeEmployeeById = (id: EmployeeId, p: Boolean) => 1,
-          listEmployeesPaged
+        val logic = createLogic(
+          userProvider = userProvider(Option(User("user", Set(Editor)))),
+          removeEmployeeById = (id: EmployeeId, p: Boolean) => 1
         )
 
         val result = logic.removeEmployee(id)
@@ -78,11 +71,8 @@ class LogicSpec extends FunSpec {
       }
 
       it("can not remove if user is logged in and has role Reader") {
-        val logic = new Logic(
-          userProvider(Option(User("user", Set(Reader)))),
-          insertEmployee,
-          removeEmployeeById,
-          listEmployeesPaged
+        val logic = createLogic(
+          userProvider = userProvider(Option(User("user", Set(Reader))))
         )
 
         val result = logic.removeEmployee(id)
@@ -91,11 +81,8 @@ class LogicSpec extends FunSpec {
       }
 
       it("can not remove if user is not logged in") {
-        val logic = new Logic(
-          userProvider(None),
-          insertEmployee,
-          removeEmployeeById,
-          listEmployeesPaged
+        val logic = createLogic(
+          userProvider = userProvider(None)
         )
 
         val result = logic.removeEmployee(id)
@@ -108,10 +95,8 @@ class LogicSpec extends FunSpec {
 
       it("should call repository with the same pageNo if user logged in and has role Editor - it's awful but works") {
         var expectedPageNo = -1
-        val logic = new Logic(
-          userProvider(Option(User("user", Set(Editor)))),
-          insertEmployee,
-          removeEmployeeById,
+        val logic = createLogic(
+          userProvider = userProvider(Option(User("user", Set(Editor)))),
           listEmployeesPaged = (p: Int) => {
             expectedPageNo = p
             List.empty[Employee]
@@ -124,10 +109,8 @@ class LogicSpec extends FunSpec {
       }
 
       it("should list if user logged in and has role Editor") {
-        val logic = new Logic(
-          userProvider(Option(User("user", Set(Editor)))),
-          insertEmployee,
-          removeEmployeeById,
+        val logic = createLogic(
+          userProvider = userProvider(Option(User("user", Set(Editor)))),
           listEmployeesPaged = (p: Int) => List(employee)
         )
 
@@ -137,10 +120,8 @@ class LogicSpec extends FunSpec {
       }
 
       it("should list if user logged in and has role Reader") {
-        val logic = new Logic(
-          userProvider(Option(User("user", Set(Reader)))),
-          insertEmployee,
-          removeEmployeeById,
+        val logic = createLogic(
+          userProvider = userProvider(Option(User("user", Set(Reader)))),
           listEmployeesPaged = (p: Int) => List(employee)
         )
 
@@ -150,11 +131,8 @@ class LogicSpec extends FunSpec {
       }
 
       it("should not list if user is not logged in") {
-        val logic = new Logic(
-          userProvider(None),
-          insertEmployee,
-          removeEmployeeById,
-          listEmployeesPaged
+        val logic = createLogic(
+          userProvider = userProvider(None)
         )
 
         val result = logic.listEmployees(pageNo)
