@@ -33,7 +33,7 @@ class LogicSpec extends FunSpec {
 
         val result = logic.addEmployee("fn", "ln")
 
-        assert(result.right.get == id)
+        assert(result == Right(id))
       }
 
       it("can not add if user is logged in and has role Reader") {
@@ -43,7 +43,7 @@ class LogicSpec extends FunSpec {
 
         val result = logic.addEmployee("fn", "ln")
 
-        assert(result.left.get == "Editor role is needed")
+        assert(result == Left("Editor role is needed"))
       }
 
       it("can not add if user is not logged") {
@@ -53,7 +53,7 @@ class LogicSpec extends FunSpec {
 
         val result = logic.addEmployee("fn", "ln")
 
-        assert(result.left.get == "user not logged in")
+        assert(result == Left("user not logged in"))
       }
     }
 
@@ -67,7 +67,7 @@ class LogicSpec extends FunSpec {
 
         val result = logic.removeEmployee(id)
 
-        assert(result.right.get == 1)
+        assert(result == Right(1))
       }
 
       it("can not remove if user is logged in and has role Reader") {
@@ -77,7 +77,7 @@ class LogicSpec extends FunSpec {
 
         val result = logic.removeEmployee(id)
 
-        assert(result.left.get == "Editor role is needed")
+        assert(result == Left("Editor role is needed"))
       }
 
       it("can not remove if user is not logged in") {
@@ -87,7 +87,7 @@ class LogicSpec extends FunSpec {
 
         val result = logic.removeEmployee(id)
 
-        assert(result.left.get == "user not logged in")
+        assert(result == Left("user not logged in"))
       }
     }
 
@@ -116,7 +116,7 @@ class LogicSpec extends FunSpec {
 
         val result = logic.listEmployees(pageNo)
 
-        assert(result.right.get == List(employee))
+        assert(result == Right(List(employee)))
       }
 
       it("should list if user logged in and has role Reader") {
@@ -127,7 +127,7 @@ class LogicSpec extends FunSpec {
 
         val result = logic.listEmployees(pageNo)
 
-        assert(result.right.get == List(employee))
+        assert(result == Right(List(employee)))
       }
 
       it("should not list if user is not logged in") {
@@ -137,7 +137,7 @@ class LogicSpec extends FunSpec {
 
         val result = logic.listEmployees(pageNo)
 
-        assert(result.left.get == "user not logged in")
+        assert(result == Left("user not logged in"))
       }
     }
   }
